@@ -1,7 +1,14 @@
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import express from 'express';
+import cors from 'cors';
+import userRouter from './routes/userRoutes';
 
-const app = require('./app');
+const app = express();
+app.use(express.json());
+
+// create users route and enable cross origin request
+app.use('/api/v1/users', cors(), userRouter);
 
 dotenv.config({ path: './config.env' });
 
