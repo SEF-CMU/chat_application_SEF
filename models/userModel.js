@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 // used to validate user input
-const validator = require('validator');
+import validator from 'validator';
 // used to hash passwords
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   name: {
