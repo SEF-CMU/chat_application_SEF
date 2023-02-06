@@ -6,6 +6,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
+    phone: req.body.phone,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
@@ -15,12 +16,12 @@ exports.signup = catchAsync(async (req, res, next) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+  // send the response back
   res.status(201).json({
     status: 'success',
-    message: 'user created successfully',
-    token,
     data: {
       user: newUser,
+      token,
     },
   });
 });

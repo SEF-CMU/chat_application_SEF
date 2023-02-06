@@ -6,9 +6,9 @@ import userRouter from './routes/userRoutes';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-// create users route and enable cross origin request
-app.use('/api/v1/users', cors(), userRouter);
+app.use('/api/v1/users', userRouter);
 
 dotenv.config({ path: './config.env' });
 
