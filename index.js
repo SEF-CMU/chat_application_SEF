@@ -18,7 +18,7 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD,
 );
 
-// Connecting to the database
+// Connecting to the database.
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
