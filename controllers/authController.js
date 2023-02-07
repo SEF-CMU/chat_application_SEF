@@ -4,6 +4,10 @@ import catchAsync from "../utils/catchAsync";
 import bcrypt from "bcryptjs";
 
 exports.signup = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (user) {
+    return res.status(401).send("User with this email already exist!");
+  }
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
