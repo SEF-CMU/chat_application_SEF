@@ -6,7 +6,7 @@ import Chat from '../models/chatModel';
 import User from '../models/userModel';
 
 /**
- * function to create chats
+ * @description function to create chats
  * @param {*request} req
  * @param {*response} res
  * @returns chat object
@@ -59,7 +59,7 @@ export const createChats = async (req, res) => {
 };
 
 /**
- * Function to get all chats
+ * @description Function to get all chats
  * @param {*request} req
  * @param {*response} res
  */
@@ -84,7 +84,7 @@ export const getAllChats = async (req, res) => {
 };
 
 /**
- * function to create a group
+ * @description function to create a group
  * @param {*request} req
  * @param {*response} res
  */
@@ -119,7 +119,7 @@ export const createGroup = async (req, res) => {
 };
 
 /**
- * Function to add user to a group
+ * @description Function to add user to a group
  * @param {*request} req
  * @param {*response} res
  */
@@ -147,7 +147,7 @@ export const addToGroup = async (req, res) => {
 };
 
 /**
- * Function to remove user from group
+ * @description Function to remove user from group
  * @param {*request} req
  * @param {*response} res
  */
