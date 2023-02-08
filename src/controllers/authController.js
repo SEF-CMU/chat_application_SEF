@@ -1,12 +1,13 @@
-import jwt from "jsonwebtoken";
-import User from "../models/userModel";
-import catchAsync from "../utils/catchAsync";
-import bcrypt from "bcryptjs";
+/* eslint-disable import/no-import-module-exports */
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/userModel';
+import catchAsync from '../utils/catchAsync';
 
 exports.signup = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
-    return res.status(401).send("User with this email already exist!");
+    return res.status(401).send('User with this email already exist!');
   }
   const newUser = await User.create({
     name: req.body.name,
@@ -21,9 +22,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-  res.status(201).json({
-    status: "success",
-    message: "user created successfully",
+  return res.status(201).json({
+    status: 'success',
+    message: 'user created successfully',
     token,
     data: {
       user: newUser,
@@ -42,7 +43,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const isValid = await bcrypt.compare(req.body.password, user.password);
 
   if (!isValid) {
-    return res.status(401).send("Password is incorrect");
+    return res.status(401).send('Password is incorrect');
   }
 
   const token = jwt.sign(
@@ -50,10 +51,10 @@ exports.login = catchAsync(async (req, res, next) => {
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXPIRES_IN,
-    }
+    },
   );
 
-  res.header("auth-token", token).send(token);
+  return res.header('auth-token', token).send(token);
 
   // res.status(200).json({
   //   status: "success",
@@ -66,9 +67,9 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = (req, res) => {
-  res.cookie("jwt", "loggedout", {
+  res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-  res.status(200).json({ status: "Logged out successfully" });
+  res.status(200).json({ status: 'Logged out successfully' });
 };
