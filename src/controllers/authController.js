@@ -55,15 +55,6 @@ exports.login = catchAsync(async (req, res, next) => {
   );
 
   return res.header('auth-token', token).send(token);
-
-  // res.status(200).json({
-  //   status: "success",
-  //   message: "user logged in successfully",
-  //   token,
-  //   data: {
-  //     user: user,
-  //   },
-  // });
 });
 
 exports.logout = (req, res) => {
