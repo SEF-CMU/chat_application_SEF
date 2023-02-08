@@ -5,6 +5,12 @@
 import Chat from '../models/chatModel';
 import User from '../models/userModel';
 
+/**
+ * function to create chats
+ * @param {*request} req
+ * @param {*response} res
+ * @returns chat object
+ */
 export const createChats = async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
@@ -52,6 +58,11 @@ export const createChats = async (req, res) => {
   }
 };
 
+/**
+ * Function to get all chats
+ * @param {*request} req
+ * @param {*response} res
+ */
 export const getAllChats = async (req, res) => {
   try {
     Chat.findOne({ users: { $elemMatch: { $eq: req.user._id } } })
@@ -71,6 +82,12 @@ export const getAllChats = async (req, res) => {
     throw new Error(error.message);
   }
 };
+
+/**
+ * function to create a group
+ * @param {*request} req
+ * @param {*response} res
+ */
 
 export const createGroup = async (req, res) => {
   const { name } = req.body;
@@ -100,6 +117,13 @@ export const createGroup = async (req, res) => {
     throw new Error(error.message);
   }
 };
+
+/**
+ * Function to add user to a group
+ * @param {*request} req
+ * @param {*response} res
+ */
+
 export const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -121,6 +145,12 @@ export const addToGroup = async (req, res) => {
     res.json(added);
   }
 };
+
+/**
+ * Function to remove user from group
+ * @param {*request} req
+ * @param {*response} res
+ */
 
 export const removeFromGroup = async (req, res) => {
   const { chatId, userId } = req.body;
