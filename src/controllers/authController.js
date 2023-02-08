@@ -6,29 +6,32 @@ import catchAsync from '../utils/catchAsync';
 
 exports.signup = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (user) {
-    return res.status(401).send('User with this email already exist!');
+  if (!user) {
+    const newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+    });
+
+    // Create a token and send it to the client
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    return res.status(201).json({
+      status: 'success',
+      message: 'user created successfully',
+      token,
+      data: {
+        user: newUser,
+      },
+    });
   }
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-  });
-
-  // Create a token and send it to the client
-  const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-
-  return res.status(201).json({
-    status: 'success',
-    message: 'user created successfully',
-    token,
-    data: {
-      user: newUser,
-    },
+  return res.status(409).send({
+    status: 409,
+    message: 'User with this email already exist!',
   });
 });
 
@@ -54,7 +57,7 @@ exports.login = catchAsync(async (req, res, next) => {
     },
   );
 
-  return res.header('auth-token', token).send(token);
+  return res.header('auth-token', token).send({ status: 200, token });
 });
 
 exports.logout = (req, res) => {

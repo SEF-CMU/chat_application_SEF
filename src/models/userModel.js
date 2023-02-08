@@ -17,7 +17,12 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  photo: String,
+  photo: {
+    type: String,
+    required: true,
+    default:
+        'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg',
+  },
   password: {
     type: String,
     required: [true, 'A user must have a password'],
@@ -46,4 +51,5 @@ userSchema.pre('save', async function (next) {
   next();
 });
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+
+export default User;
