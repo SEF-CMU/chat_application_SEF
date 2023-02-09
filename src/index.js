@@ -5,6 +5,7 @@ import cors from 'cors';
 import io from 'socket.io';
 import userRoutes from './routes/userRoutes';
 import chatRoutes from './routes/chatRoutes';
+import messageRoutes from './routes/messageRoutes';
 
 const app = express();
 app.use(express.json());
@@ -25,8 +26,9 @@ mongoose
 
 app.use('/api/v1/users', cors(), userRoutes);
 app.use('/api/v1/chats', cors(), chatRoutes);
+app.use('/api/v1/messages', cors(), messageRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 const server = app.listen(PORT, console.log(`Server Started on Port ${PORT}`));
 const socketIo = io(server, {

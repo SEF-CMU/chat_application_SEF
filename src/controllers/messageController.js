@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 import Message from '../models/messageModel';
 import User from '../models/userModel';
 import Chat from '../models/chatModel';
@@ -10,9 +12,15 @@ import Chat from '../models/chatModel';
  */
 export const allMessages = async (req, res) => {
   try {
-    const messages = await Message.find({ chat: req.params.chatId })
+    let messages = await Message.find({ chat: req.params.chatId })
       .populate('sender', 'name pic email')
       .populate('chat');
+
+    messages = await User.populate(messages, {
+      path: 'chat.users',
+      select: 'name pic email',
+    });
+
     res.json(messages);
   } catch (error) {
     res.status(400);
@@ -31,8 +39,9 @@ export const sendMessage = async (req, res) => {
   const { content, chatId } = req.body;
 
   if (!content || !chatId) {
-    console.log('Invalid data passed into request');
-    return res.sendStatus(400);
+    return res
+      .status(400)
+      .send({ message: 'Invalid data passed into request' });
   }
 
   const newMessage = {
@@ -42,20 +51,20 @@ export const sendMessage = async (req, res) => {
   };
 
   try {
-    let message = await Message.create(newMessage);
+    const message = await Message.create(newMessage);
 
-    message = await message.populate('sender', 'name pic');
-    message = await message.populate('chat');
-    message = await User.populate(message, {
+    let fullMessage = await Message.findOne({ _id: message._id })
+      .populate('sender', 'name pic')
+      .populate('chat');
+
+    fullMessage = await User.populate(fullMessage, {
       path: 'chat.users',
       select: 'name pic email',
     });
 
-    await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
-
-    res.json(message);
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: fullMessage });
+    res.send(fullMessage);
   } catch (error) {
-    res.status(400);
-    throw new Error(error.message);
+    res.status(400).send({ message: error.message });
   }
 };
