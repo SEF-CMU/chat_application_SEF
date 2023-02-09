@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-import-module-exports */
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
@@ -16,17 +17,16 @@ exports.signup = catchAsync(async (req, res, next) => {
     });
 
     // Create a token and send it to the client
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
     return res.status(201).json({
-      status: 'success',
-      message: 'user created successfully',
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      pic: newUser.pic,
       token,
-      data: {
-        user: newUser,
-      },
     });
   }
   return res.status(409).send({
@@ -57,7 +57,14 @@ exports.login = catchAsync(async (req, res, next) => {
     },
   );
 
-  return res.header('auth-token', token).send({ status: 200, token });
+  return res.header('auth-token', token).send({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    pic: user.pic,
+    token,
+
+  });
 });
 
 exports.logout = (req, res) => {
