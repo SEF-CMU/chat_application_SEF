@@ -4,7 +4,6 @@ import User from '../models/userModel';
 
 const protect = catchAsync(async (req, res, next) => {
   let token;
-
   if (
     req.headers.authorization
     && req.headers.authorization.startsWith('Bearer')
@@ -21,15 +20,14 @@ const protect = catchAsync(async (req, res, next) => {
 
       next();
     } catch (error) {
-      res.status(401);
-      throw new Error('Not authorized, token failed');
+      res.status(401).send({ message: 'Not authorized, token failed' });
     }
   }
 
-  if (!token) {
-    res.status(401);
-    throw new Error('Not authorized, no token');
-  }
+  // if (!token) {
+  //   res.status(401);
+  //   throw new Error('Not authorized, no token');
+  // }
 });
 
 export default protect;

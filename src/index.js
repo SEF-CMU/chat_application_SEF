@@ -1,8 +1,11 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import express from 'express';
 import cors from 'cors';
 import io from 'socket.io';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import userRoutes from './routes/userRoutes';
 import chatRoutes from './routes/chatRoutes';
 import messageRoutes from './routes/messageRoutes';
@@ -23,10 +26,11 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log('DB connection successful!'));
+app.use(cors());
 
-app.use('/api/v1/users', cors(), userRoutes);
-app.use('/api/v1/chats', cors(), chatRoutes);
-app.use('/api/v1/messages', cors(), messageRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/chats', chatRoutes);
+app.use('/api/v1/messages', messageRoutes);
 
 const PORT = process.env.PORT || 4000;
 
@@ -53,4 +57,21 @@ socketIo.on('connection', (socket) => {
 
   socket.on('typing', (room) => socket.in(room).emit('typing'));
   socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
+
+  socket.on('new message', (newMessageRecieved) => {
+    const { chat } = newMessageRecieved;
+
+    if (!chat.users) return console.log('chat.users not defined');
+
+    chat.users.forEach((user) => {
+      if (user._id === newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit('message recieved', newMessageRecieved);
+    });
+  });
+
+  socket.off('setup', () => {
+    console.log('USER DISCONNECTED');
+    socket.leave(userData._id);
+  });
 });

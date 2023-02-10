@@ -65,7 +65,7 @@ export const createChats = async (req, res) => {
  */
 export const getAllChats = async (req, res) => {
   try {
-    Chat.findOne({ users: { $elemMatch: { $eq: req.user._id } } })
+    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate('users', '-password')
       .populate('groupAdmin', '-password')
       .populate('latestMessage')
