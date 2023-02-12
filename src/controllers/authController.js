@@ -22,7 +22,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     });
 
     return res.status(201).json({
-      _id: newUser._id,
+      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       pic: newUser.pic,
@@ -58,7 +58,7 @@ exports.login = catchAsync(async (req, res, next) => {
   );
 
   return res.header('auth-token', token).send({
-    _id: user._id,
+    id: user._id,
     name: user.name,
     email: user.email,
     pic: user.pic,
