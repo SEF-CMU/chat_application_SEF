@@ -34,7 +34,7 @@ socketIo.on('connection', (socket) => {
   console.log('Connected to socket.io');
   socket.on('setup', (userData) => {
     // eslint-disable-next-line no-underscore-dangle
-    socket.join(userData._id);
+    socket.join(userData.id);
     socket.emit('connected');
   });
 
@@ -52,14 +52,14 @@ socketIo.on('connection', (socket) => {
     if (!chat.users) return console.log('chat.users not defined');
 
     chat.users.forEach((user) => {
-      if (user._id === newMessageRecieved.sender._id) return;
-
-      socket.in(user._id).emit('message recieved', newMessageRecieved);
+      if (user._id !== newMessageRecieved.sender._id) {
+        socket.in(user._id).emit('message received', newMessageRecieved);
+      }
     });
   });
 
   socket.off('setup', () => {
     console.log('USER DISCONNECTED');
-    socket.leave(userData._id);
+    socket.leave(userData.id);
   });
 });

@@ -154,7 +154,7 @@ export const addToGroup = async (req, res) => {
 
 export const removeFromGroup = async (req, res) => {
   const { chatId, userId } = req.body;
-
+ 
   const removed = await Chat.findByIdAndUpdate(
     chatId,
     {
@@ -166,6 +166,7 @@ export const removeFromGroup = async (req, res) => {
   )
     .populate('users', '-password')
     .populate('groupAdmin', '-password');
+  
 
   if (!removed) {
     res.status(404).send({ message: 'Chat Not Found' });
